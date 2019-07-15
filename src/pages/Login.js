@@ -1,145 +1,169 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  StatusBar ,
-  TouchableOpacity
-} from 'react-native';
-import {connect} from "react-redux";
-import {compose} from "redux";
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
+import { HelperText } from 'react-native-paper';
+import { Actions } from 'react-native-router-flux';
 
-import InputText from "../components/InputText";
-import {loginUser} from "../actions/auth.actions";
 import Logo from '../components/Logo';
-import Form from '../components/Form';
+import InputText from '../components/InputText';
 
-import {Actions} from 'react-native-router-flux';
+import { loginUser } from '../actions/auth.actions';
 
+class Login extends Component<{}> {
+  signup() {
+    Actions.signup();
+  }
+
+  loginUser = values => {
+    let { loginUser } = this.props;
+    loginUser(values);
+  };
+
+  onSubmit = values => {
+    this.loginUser(values);
+  };
+
+  renderTextInput = field => {
+    const {
+      meta: { touched, error },
+      label,
+      secureTextEntry,
+      iconPassword,
+      maxLength,
+      keyboardType,
+      placeholder,
+      input: { onChange, ...restInput },
+    } = field;
+    return (
+      <View>
+        <InputText
+          onChangeText={onChange}
+          maxLength={maxLength}
+          placeholder={placeholder}
+          keyboardType={keyboardType}
+          secureTextEntry={secureTextEntry}
+          iconPassword={iconPassword}
+          label={label}
+          {...restInput}
+        />
+        {touched && error && (
+          <HelperText type="error" visible={true}>
+            {error}
+          </HelperText>
+        )}
+      </View>
+    );
+  };
+
+  render() {
+    const { handleSubmit } = this.props;
+    return (
+      <View style={styles.container}>
+        <Logo />
+        <View style={styles.inputContainerStyle}>
+          <Field
+            name="email"
+            label="Email"
+            placeholder="Email@host.com"
+            component={this.renderTextInput}
+          />
+          <Field
+            name="password"
+            label="Password"
+            placeholder="***********"
+            secureTextEntry={true}
+            iconPassword={true}
+            component={this.renderTextInput}
+          />
+        </View>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleSubmit(this.onSubmit)}>
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+        <View style={styles.signupTextCont}>
+          <Text style={styles.signupText}>Do not have an account yet?</Text>
+          <TouchableOpacity onPress={this.signup}>
+            <Text style={styles.signupButton}> Signup</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+}
 
 const styles = StyleSheet.create({
-  container : {
-    backgroundColor:'#455a64',
+  container: {
+    backgroundColor: '#455a64',
     flex: 1,
-    alignItems:'center',
-    justifyContent :'center'
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  signupTextCont : {
-  	flexGrow: 1,
-    alignItems:'flex-end',
-    justifyContent :'center',
-    paddingVertical:16,
-    flexDirection:'row'
+  signupTextCont: {
+    flexGrow: 1,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    flexDirection: 'row',
   },
   signupText: {
-  	color:'rgba(255,255,255,0.6)',
-  	fontSize:16
+    color: 'rgba(255,255,255,0.6)',
+    fontSize: 16,
   },
   signupButton: {
-  	color:'#ffffff',
-  	fontSize:16,
-  	fontWeight:'500'
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '500',
   },
   button: {
-    width:300,
-    backgroundColor:'#1c313a',
+    width: 300,
+    backgroundColor: '#1c313a',
     borderRadius: 25,
     marginVertical: 10,
-    paddingVertical: 13
+    paddingVertical: 13,
   },
   buttonText: {
-    fontSize:16,
-    fontWeight:'500',
-    color:'#ffffff',
-    textAlign:'center'
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#ffffff',
+    textAlign: 'center',
+  },
+  inputContainerStyle: {
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    padding: 5,
+    paddingBottom: 10,
+    borderRadius: 5,
   },
 });
 
-
-class Login extends Component<{}> {
-
-	signup() {
-		Actions.signup()
-	}
-
-  loginUser = (values) => {
-      this.props.dispatch(loginUser(values));
+const validate = values => {
+  const errors = {};
+  if (!values.email) {
+    errors.email = 'Email is required';
   }
-
-  onSubmit = (values) => {
-      this.loginUser(values);
+  if (!values.password) {
+    errors.password = 'Password is required';
   }
-
-  renderTextInput = (field) => {
-        const {meta: {touched, error}, label, secureTextEntry, maxLength, keyboardType, placeholder, input: {onChange, ...restInput}} = field;
-        return (
-            <View>
-              <InputText
-                  onChangeText={onChange}
-                  maxLength={maxLength}
-                  placeholder={placeholder}
-                  keyboardType={keyboardType}
-                  secureTextEntry={secureTextEntry}
-                  label={label}
-                  {...restInput} />
-            {(touched && error) && <Text style={styles.errorText}>{error}</Text>}
-            </View>
-        );
-  }
-
-	render() {
-    const { handleSubmit} = this.props;
-		return(
-			<View style={styles.container}>
-				<Logo/>
-        <Field
-            name="email"
-            placeholder="Email"
-            component={this.renderTextInput} />
-        <Field
-            name="password"
-            placeholder="Password"
-            secureTextEntry={true}
-            component={this.renderTextInput} />
-        <TouchableOpacity style={styles.button} onPress={handleSubmit(this.onSubmit)}>
-          <Text style={styles.buttonText}>Signup</Text>
-        </TouchableOpacity>
-				<View style={styles.signupTextCont}>
-					<Text style={styles.signupText}>Do not have an account yet?</Text>
-					<TouchableOpacity onPress={this.signup}><Text style={styles.signupButton}> Signup</Text></TouchableOpacity>
-				</View>
-			</View>
-			)
-	}
-}
-
-const validate = (values) => {
-    const errors = {};
-    if(!values.name) {
-        errors.name = "Name is required"
-    }
-    if(!values.email) {
-        errors.email = "Email is required"
-    }
-    if(!values.password) {
-        errors.password = "Name is required"
-    }
-    return errors;
+  return errors;
 };
 
-mapStateToProps = (state) => ({
-    createUser: state.authReducer.createUser
-})
+const mapStateToProps = state => ({
+  //createUser: state.authReducer.createUser,
+});
 
-mapDispatchToProps = (dispatch) => ({
-    dispatch
+const mapDispatchToProps = dispatch => ({
+  loginUser: values => dispatch(loginUser(values)),
 });
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  ),
   reduxForm({
-    form: "login",
-    validate
+    form: 'login',
+    validate,
   })
 )(Login);

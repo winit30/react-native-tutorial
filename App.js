@@ -1,20 +1,12 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
-import React, {Component} from 'react';
-import {StyleSheet, View, StatusBar} from 'react-native';
-import {Provider} from "react-redux";
+import React, { Component } from 'react';
+import { Provider } from 'react-redux';
+//import { PersistGate } from 'redux-persist/es/integration/react';
 import { PersistGate } from 'redux-persist/integration/react'
 
-import Main from "./src/Main";
 import persist from "./src/config/store";
-
 const persistStore = persist();
+
+import Main from "./src/Main";
 
 export default class App extends Component<Props> {
   render() {
