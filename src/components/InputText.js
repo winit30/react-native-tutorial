@@ -49,7 +49,7 @@ class InputText extends Component<{}> {
   constructor(props) {
     super(props);
     this.state = {
-      value: this.props.value || '',
+      value: this.props.defaultValue || '',
       vPwd: props.secureTextEntry,
     };
   }
@@ -72,6 +72,7 @@ class InputText extends Component<{}> {
   };
 
   render() {
+    let { value } = this.state;
     const {
       label,
       placeholder,
@@ -79,8 +80,6 @@ class InputText extends Component<{}> {
       iconPassword,
       keyboardType,
       maxLength,
-      value,
-      onChangeText,
       onSubmitEditing,
     } = this.props;
     const { vPwd } = this.state;
