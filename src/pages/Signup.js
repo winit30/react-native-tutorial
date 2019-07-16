@@ -4,7 +4,8 @@ import {
   Text,
   View,
   StatusBar ,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert
 } from 'react-native';
 import { Field, reduxForm } from 'redux-form';
 import {connect} from "react-redux";
@@ -15,6 +16,7 @@ import Form from '../components/Form';
 import InputText from "../components/InputText";
 import {createNewUser} from "../actions/auth.actions";
 import Loader from "../components/Loader";
+import {ErrorUtils} from "../utils/auth.utils";
 
 import {Actions} from 'react-native-router-flux';
 
@@ -74,11 +76,19 @@ const styles = StyleSheet.create({
 class Signup extends Component<{}> {
 
   goBack() {
-      Actions.login();
+      Actions.pop();
   }
 
-  createNewUser = (values) => {
-      this.props.dispatch(createNewUser(values));
+  createNewUser = async (values) => {
+      try {
+          const response =  await this.props.dispatch(createNewUser(values));
+          if (!response.success) {
+              throw response;
+          }
+      } catch (error) {
+          const newError = new ErrorUtils(error, "Signup Error");
+          newError.showAlert();
+      }
   }
 
   onSubmit = (values) => {

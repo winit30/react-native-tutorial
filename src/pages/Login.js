@@ -4,7 +4,8 @@ import {
   Text,
   View,
   StatusBar ,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert
 } from 'react-native';
 import {connect} from "react-redux";
 import {compose} from "redux";
@@ -14,7 +15,7 @@ import InputText from "../components/InputText";
 import {loginUser} from "../actions/auth.actions";
 import Logo from '../components/Logo';
 import Form from '../components/Form';
-
+import Loader from "../components/Loader";
 import {Actions} from 'react-native-router-flux';
 
 
@@ -63,8 +64,31 @@ class Login extends Component<{}> {
 		Actions.signup()
 	}
 
-  loginUser = (values) => {
-      this.props.dispatch(loginUser(values));
+  loginUser = async (values) => {
+      try {
+          const response =  await this.props.dispatch(loginUser(values));
+          console.log(response);
+          if (!response.success) {
+              throw response;
+          }
+      } catch (error) {
+          let errorText;
+          if (error.message) {
+              errorText = error.message
+          }
+          errorText = error.responseBody;
+          Alert.alert(
+            'Login Error!',
+            errorText,
+            [
+              {
+                text: 'Cancel',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
+              },
+            ]
+          );
+      }
   }
 
   onSubmit = (values) => {
@@ -89,9 +113,11 @@ class Login extends Component<{}> {
   }
 
 	render() {
-    const { handleSubmit} = this.props;
+    const { handleSubmit, loginUser} = this.props;
+    console.log(loginUser);
 		return(
 			<View style={styles.container}>
+        {(loginUser && loginUser.isLoading) && <Loader />}
 				<Logo/>
         <Field
             name="email"
@@ -103,7 +129,7 @@ class Login extends Component<{}> {
             secureTextEntry={true}
             component={this.renderTextInput} />
         <TouchableOpacity style={styles.button} onPress={handleSubmit(this.onSubmit)}>
-          <Text style={styles.buttonText}>Signup</Text>
+          <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
 				<View style={styles.signupTextCont}>
 					<Text style={styles.signupText}>Do not have an account yet?</Text>
@@ -129,7 +155,7 @@ const validate = (values) => {
 };
 
 mapStateToProps = (state) => ({
-    createUser: state.authReducer.createUser
+    loginUser: state.authReducer.loginUser
 })
 
 mapDispatchToProps = (dispatch) => ({

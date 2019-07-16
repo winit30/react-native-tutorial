@@ -1,7 +1,21 @@
 import { combineReducers } from 'redux';
 
-const storeAuthData = (state = {}, action) => {
+const authData = (state = {}, action) => {
+    switch (action.type) {
+        case "AUTH_USER_SUCCESS":
+            return {
+              token: action.token,
+              isLoggedIn: true
+            }
 
+        case "AUTH_USER_FAIL":
+            return {
+              token: null,
+              isLoggedIn: false
+            }
+        default:
+          return state;
+    }
 }
 
 const createUser = (state = {}, action) => {
@@ -10,41 +24,26 @@ const createUser = (state = {}, action) => {
       case "CREATE_USER_LOADING":
           return {
               isLoading: true,
-              token: null,
               isError: false,
               isSuccess: false,
               errors: null,
-              isLoggedIn: false
+
           }
 
       case "CREAT_USER_SUCCESS":
           return {
               isLoading: false,
-              token: action.token,
               isError: false,
               isSuccess: true,
-              errors: null,
-              isLoggedIn: true
+              errors: null
           }
 
       case "CREAT_USER_FAIL":
           return {
               isLoading: false,
-              token: null,
               isError: true,
               isSuccess: false,
-              errors: action.payload,
-              isLoggedIn: false
-          }
-
-      case "USER_LOGGED_OUT_SUCCESS":
-          return {
-              isLoading: false,
-              token: null,
-              isError: false,
-              isSuccess: false,
-              errors: null,
-              isLoggedIn: false
+              errors: action.payload
           }
 
       default:
@@ -58,41 +57,25 @@ const loginUser = (state = {}, action) => {
       case "LOGIN_USER_LOADING":
           return {
               isLoading: true,
-              token: null,
               isError: false,
               isSuccess: false,
-              errors: null,
-              isLoggedIn: false
+              errors: null
           }
 
       case "LOGIN_USER_SUCCESS":
           return {
               isLoading: false,
-              token: action.token,
               isError: false,
               isSuccess: true,
               errors: null,
-              isLoggedIn: true
           }
 
       case "LOGIN_USER_FAIL":
           return {
               isLoading: false,
-              token: null,
               isError: true,
               isSuccess: false,
-              errors: action.payload,
-              isLoggedIn: false
-          }
-
-      case "USER_LOGGED_OUT_SUCCESS":
-          return {
-              isLoading: false,
-              token: null,
-              isError: false,
-              isSuccess: false,
-              errors: null,
-              isLoggedIn: false
+              errors: action.payload
           }
 
       default:
@@ -100,8 +83,8 @@ const loginUser = (state = {}, action) => {
     }
 }
 
-
-
 export default combineReducers({
-  createUser
+  createUser,
+  loginUser,
+  authData
 });

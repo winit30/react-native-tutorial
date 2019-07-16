@@ -1,4 +1,4 @@
-const BASE_URL = "http://192.168.2.22:3333";
+const BASE_URL = "http://192.168.2.30:3333";
 
 export const api = async (url, method, body = null, headers = {}) => {
 
@@ -21,7 +21,7 @@ export const api = async (url, method, body = null, headers = {}) => {
       const timeOutPromise = new Promise((resolve, reject) => {
           setTimeout(() => {
               reject("Request Timeout");
-          }, 10000);
+          }, 3000);
       });
 
       const response = await Promise.race([fetchPromise, timeOutPromise]);
@@ -55,12 +55,30 @@ export const fetchApi = async (url, method, body, statusCode, token = null, load
                 result.token = response.headers.get("x-auth");
             }
 
-            result.responseBody = await response.json();
+            let responseBody;
+            const responseText = await response.text();
+
+            try {
+                responseBody = JSON.parse(responseText);
+            } catch (e) {
+                responseBody = responseText;
+            }
+
+            result.responseBody = responseBody;
             return result;
 
         }
 
-        result.responseBody = await response.json();
+        let errorBody;
+        const errorText = await response.text();
+
+        try {
+            errorBody = JSON.parse(errorText);
+        } catch (e) {
+            errorBody = errorText;
+        }
+
+        result.responseBody = errorBody;
 
         console.log(result);
 

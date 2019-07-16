@@ -14,15 +14,14 @@ import Routes from './components/Routes';
 class Main extends Component<{}> {
 
 	render() {
-    const {createUser} = this.props;
-    console.log(this.props.createUser);
+    const {authData:{isLoggedIn}} = this.props;
 		return(
       <View style={styles.container}>
         <StatusBar
            backgroundColor="#1c313a"
            barStyle="light-content"
          />
-        <Routes isLoggedIn={this.props.createUser.isLoggedIn} />
+        <Routes isLoggedIn={isLoggedIn} />
       </View>
 			)
 	}
@@ -35,7 +34,7 @@ const styles = StyleSheet.create({
 });
 
 mapStateToProps = state => ({
-    createUser: state.authReducer.createUser
+    authData: state.authReducer.authData
 })
 
 export default connect(mapStateToProps, null)(Main)

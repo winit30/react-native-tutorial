@@ -42,9 +42,11 @@ class Profile extends Component<{}> {
   }
 
 	render() {
+    const {getUser: {userDetails}} = this.props;
+
 		return(
 			<View style={styles.container}>
-			     <Text style={styles.textStyle}>This is a profile page</Text>
+			     <Text style={styles.textStyle}>This is a profile page for {userDetails ? userDetails.name : ""}</Text>
            <TouchableOpacity style={styles.button} onPress={this.logoutUser}>
              <Text style={styles.buttonText}>Logout</Text>
            </TouchableOpacity>

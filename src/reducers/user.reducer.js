@@ -8,7 +8,7 @@ const getUser = (state = {}, action) => {
             isLoading: true,
             isError: false,
             isSuccess: false,
-            userDatils: null,
+            userDetails: null,
             errors: null
           }
 
@@ -17,7 +17,7 @@ const getUser = (state = {}, action) => {
             isLoading: false,
             isError: false,
             isSuccess: true,
-            userDatils: action.payload,
+            userDetails: action.payload,
             errors: null
           }
 
@@ -26,7 +26,7 @@ const getUser = (state = {}, action) => {
             isLoading: false,
             isError: true,
             isSuccess: false,
-            userDatils: null,
+            userDetails: null,
             errors: action.payload
           }
 
